@@ -1,7 +1,8 @@
 import React from 'react';
 import {Form, Button, Row, Col} from 'react-bootstrap';
-import signUp from './signUp.svg';
+import signUpLogo from './signUpLogo.svg';
 import AlertDismissible from '../helpers/AlertDismissible';
+import {signIn, signUp} from '../services/AuthService';
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -31,14 +32,13 @@ class SignUp extends React.Component {
     event.preventDefault();
     event.stopPropagation();
     let form = event.target;
-    // eslint-disable-next-line no-undef
-    io.socket.post('/api/users', this.state.newUser, (resData, jwres) => {
+    signUp(this.state.newUser, (resData, jwres) => {
       if (jwres.statusCode === 400) {
         return this.showError(resData.message);
       }
       form.reset();
       return this.showSuccess('User created correctly!');
-    });
+    })
   };
 
   showError(value) {
@@ -104,7 +104,7 @@ class SignUp extends React.Component {
             </Form>
           </Col>
           <Col>
-            <img src={signUp} className="SignUp-logo" alt="logo"/>
+            <img src={signUpLogo} className="SignUp-logo" alt="logo"/>
           </Col>
         </Row>
       </div>

@@ -17,6 +17,15 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  // '*': true,
+  '*': 'UserIsUserPolicy', //Secure all routes with UserIsUserPolicy
+  'JwtController': {
+    '*': true// Make this open to allow for signup and authentication
+  },
+  // 'AdminController': {
+  //   '*': 'UserIsAdminPolicy' //secure this route with UserIsAdminPolicy
+  // },
+  // 'ProfileController': {
+  //   'destroy': 'UserIsAdminPolicy' //only admin can delete a profile, secured with UserIsAdminPolicy
+  // }
 
 };
