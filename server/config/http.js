@@ -43,7 +43,8 @@ module.exports.http = {
     ],
 
     html5index: function html5index(req, res) {
-      fs.createReadStream('../client/build/index.html').pipe(res);
+      let path = process.env.NODE_ENV === 'production' ? 'assets' : '../client/build'
+      fs.createReadStream(`${path}/index.html`).pipe(res);
     }
 
 
