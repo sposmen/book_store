@@ -30,9 +30,9 @@
     "type": "git",
     "url": "git://github.com/sposmen/book-store.git"
   },
-  "author": "sposmen",
+  "author": "Jaime Giraldo<sposmen@gmail.com>",
   "license": "",
   "engines": {
-    "node": "^12.13"
+    "node": "12.13.0"
   }
 }

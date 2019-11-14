@@ -12,7 +12,7 @@ import App from './App';
 
 let io = sailsIOClient(socketIOClient);
 io.sails.reconnection = true;
-io.sails.url = window.location.port === '1337' ? window.location.origin : `http://${window.location.hostname}:1337`;
+io.sails.url = window.location.origin;
 window.io = io;
 
 ReactDOM.render(<App/>, document.getElementById('root'));
