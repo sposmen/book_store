@@ -28,11 +28,14 @@ module.exports.security = {
   *                                                                          *
   ***************************************************************************/
 
-  // cors: {
-  //   allRoutes: false,
-  //   allowOrigins: '*',
-  //   allowCredentials: false,
-  // },
+  cors: {
+    allRoutes: true,
+    allowOrigins: [
+      'https://sposmen-books.herokuapp.com'
+    ],
+    allowRequestHeaders: 'authorization,content-type',
+    allowCredentials: false
+  }
 
 
   /****************************************************************************

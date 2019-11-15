@@ -11,19 +11,21 @@
 module.exports.policies = {
 
   /***************************************************************************
-  *                                                                          *
-  * Default policy for all controllers and actions, unless overridden.       *
-  * (`true` allows public access)                                            *
-  *                                                                          *
-  ***************************************************************************/
+   *                                                                          *
+   * Default policy for all controllers and actions, unless overridden.       *
+   * (`true` allows public access)                                            *
+   *                                                                          *
+   ***************************************************************************/
 
   '*': 'UserIsUserPolicy', //Secure all routes with UserIsUserPolicy
   'JwtController': {
-    '*': true// Make this open to allow for signup and authentication
+    'me': 'JwtPolicy',
+    '*': true
   },
-  // 'AdminController': {
-  //   '*': 'UserIsAdminPolicy' //secure this route with UserIsAdminPolicy
-  // },
+
+  'BookController': {
+    '*': 'UserIsAdminPolicy' //secure this route with UserIsAdminPolicy
+  },
   // 'ProfileController': {
   //   'destroy': 'UserIsAdminPolicy' //only admin can delete a profile, secured with UserIsAdminPolicy
   // }

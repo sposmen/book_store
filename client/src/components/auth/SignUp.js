@@ -2,7 +2,7 @@ import React from 'react';
 import {Form, Button, Row, Col} from 'react-bootstrap';
 import signUpLogo from './signUpLogo.svg';
 import AlertDismissible from '../helpers/AlertDismissible';
-import {signIn, signUp} from '../services/AuthService';
+import {signUp} from '../services/AuthService';
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -19,7 +19,6 @@ class SignUp extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.showError = this.showError.bind(this);
-    this.showSuccess = this.showSuccess.bind(this);
   }
 
   changeHandler = (event) => {
@@ -31,22 +30,15 @@ class SignUp extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     event.stopPropagation();
-    let form = event.target;
     signUp(this.state.newUser, (resData, jwres) => {
       if (jwres.statusCode === 400) {
         return this.showError(resData.message);
       }
-      form.reset();
-      return this.showSuccess('User created correctly!');
-    })
+    });
   };
 
   showError(value) {
     return value === undefined ? this.state.error : this.setState({error: value});
-  }
-
-  showSuccess(value) {
-    return value === undefined ? this.state.success : this.setState({success: value});
   }
 
   render() {
@@ -54,24 +46,12 @@ class SignUp extends React.Component {
       <div className="UserSignUp">
         <Row>
           <Col md={{span: 8}}>
-            <AlertDismissible>
-              <strong>Warning!</strong> This is not a productive app. The password will not be hard encoded, so please
-              be cautious
-            </AlertDismissible>
             {
               this.state.error ? (
                 <AlertDismissible parentValue={this.showError}>{this.state.error}</AlertDismissible>
               ) : ''
             }
-            {
-              this.state.success ? (
-                <AlertDismissible parentValue={this.showSuccess}
-                                  variant='success'>
-                  {this.state.success}
-                </AlertDismissible>
-              ) : ''
-            }
-            <Form validated={this.validated} onSubmit={this.handleSubmit}>
+            <Form onSubmit={this.handleSubmit}>
               <Form.Group controlId="formBasicFirstName">
                 <Form.Label>First Name</Form.Label>
                 <Form.Control

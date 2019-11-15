@@ -30,7 +30,6 @@ module.exports = {
       type: 'string',
       defaultsTo: 'token'
     },
-
   },
 
   // Override toJSON method to remove password from API
