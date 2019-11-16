@@ -26,6 +26,8 @@ const menuByUser = {
   admin: {
     routes: [
       ['/books', 'Books'],
+      ['/users', 'Users'],
+      ['/orders', 'Orders'],
     ],
     switch: [
       ['/books', <BooksList/>],

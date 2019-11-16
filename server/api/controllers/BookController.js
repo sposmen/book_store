@@ -10,12 +10,19 @@ const fs = require('fs');
 
 module.exports = {
 
-  create: function (req, res) {
+  create: async function (req, res) {
+    let book = req.allParams();
+
+    let booksCount = await Book.count(_.pick(book, ['name', 'author']));
+
+    if(booksCount>0){
+      return res.badRequest('Book already exist');
+    }
+
     req.file('bookFile').upload({
       // don't allow the total upload size to exceed ~10MB
       maxBytes: 10000000
     }, (err, uploadedFiles) => {
-      let book = _.pick(req.allParams(), ['name', 'author', 'price']);
       if (err) {
         return res.serverError(err);
       }
@@ -61,6 +68,10 @@ module.exports = {
         });
       }).run(streamer);
     });
+  },
+
+  count: async function (req, res) {
+    res.send(await Book.count());
   },
 
   download: function (req, res) {

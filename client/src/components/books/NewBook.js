@@ -35,7 +35,6 @@ class NewBook extends React.Component {
       headers: {'content-type': 'multipart/form-data'}
     }).then((response) => {
       console.log(response);
-      alert('Done');
       this.hideNew();
     });
   };

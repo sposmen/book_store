@@ -25,7 +25,8 @@ module.exports.routes = {
   'GET /api/jwt/me': 'JwtController.me',
 
 
-  'GET /api/books/:id/download': 'BookController.download'
+  'GET /api/books/count': 'BookController.count',
+  'GET /api/books/:id/download': 'BookController.download',
 
 
   // '/': { view: 'pages/homepage' }

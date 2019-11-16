@@ -38,7 +38,6 @@ module.exports.http = {
       'compress',
       'router',
       'www',
-      'favicon',
       'html5index',
     ],
 

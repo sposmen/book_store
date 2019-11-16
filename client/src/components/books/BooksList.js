@@ -1,27 +1,35 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom';
 import JwtRequest from '../services/JwtRequest';
-import {Button, Col, Row, Table} from 'react-bootstrap';
+import {Button, Col, Row, Table, Pagination} from 'react-bootstrap';
+import downloadLogo from '../helpers/downloadLogo.svg';
 import NewBook from './NewBook';
 import HardJwtRequest from '../services/HardJwtRequest';
+import {createBrowserHistory} from 'history';
+import signUpLogo from '../auth/signUpLogo.svg';
 
 class BooksList extends React.Component {
   constructor(props) {
     super(props);
-    this.pageSize = 10;
+    this.pageSize = parseInt(this.params('pageSize')) || 5;
+    this.history = createBrowserHistory();
+    let page = parseInt(this.params('page')) || 1;
     this.state = {
       showNew: false,
-      page: this.params('page') || 1,
+      page: page,
+      pageCount: 1,
       books: []
     };
-    this.getBooks();
     this.showNew = this.showNew.bind(this);
     this.hideNew = this.hideNew.bind(this);
   }
 
+  componentDidMount() {
+    this.toPage(this.state.page);
+  }
+
   params(param = null) {
     let params = new URLSearchParams(window.location.search);
-    return param ? params.get('name') : params;
+    return param ? params.get(param) : params;
   }
 
   getBooks() {
@@ -33,6 +41,17 @@ class BooksList extends React.Component {
           this.setState({books: books});
         }
       });
+      JwtRequest.get({url: '/api/books/count'}, (booksCount, jwres) => {
+        if (jwres.statusCode === 200 && booksCount) {
+          let pageCount = Math.ceil(parseInt(booksCount) / this.pageSize);
+          if(this.state.page > pageCount)
+            this.toPage(pageCount);
+          else{
+            this.setState({pageCount: pageCount});
+          }
+
+        }
+      });
     }
   }
 
@@ -41,6 +60,7 @@ class BooksList extends React.Component {
   }
 
   hideNew() {
+    this.getBooks();
     this.setState({showNew: false});
   }
 
@@ -50,7 +70,32 @@ class BooksList extends React.Component {
     };
   }
 
-  books() {
+  toPage(page) {
+    this.setState({page: page});
+    setImmediate(()=>this.getBooks());
+    this.history.push({
+      pathname: '/books',
+      search: '?' + new URLSearchParams({page: page}).toString()
+    });
+  }
+
+  pagination() {
+    let base = Math.max(this.state.page - 2, 1);
+    let max = Math.min(base + 5, this.state.pageCount);
+    let items = [];
+    for (let number = base; number <= max; number++) {
+      items.push(
+        <Pagination.Item onClick={() => this.toPage(number)} key={number} active={number === this.state.page}>
+          {number}
+        </Pagination.Item>,
+      );
+    }
+    return (
+      <Pagination>{items}</Pagination>
+    );
+  }
+
+  render() {
     return (
       <div>
         <NewBook showNew={this.state.showNew} hideNew={this.hideNew}/>
@@ -63,7 +108,7 @@ class BooksList extends React.Component {
           </Col>
         </Row>
 
-        <Table striped bordered hover size="sm">
+        <Table striped size="sm">
           <thead>
           <tr>
             <th>Name</th>
@@ -81,21 +126,16 @@ class BooksList extends React.Component {
                 <td>{book.author}</td>
                 <td>{book.price}</td>
                 <td>{book.keywords && book.keywords.join(', ')}</td>
-                <td><a onClick={this.download(book)}>DOWNLOAD</a></td>
+                <td><Button variant="link" onClick={this.download(book)}>
+                  <img src={downloadLogo} style={{width: 20, height: 20}} className="Download-logo" alt="logo"/>
+                </Button></td>
               </tr>
             ))
           }
           </tbody>
         </Table>
+        <Row><Col>{this.pagination()}</Col></Row>
       </div>
-    );
-  }
-
-  render() {
-    return (
-      this.state.page ?
-        this.books() :
-        <Redirect to='/books?page=1'/>
     );
   }
 }
