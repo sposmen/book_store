@@ -80,7 +80,7 @@ class BooksList extends React.Component {
                 <td>{book.name}</td>
                 <td>{book.author}</td>
                 <td>{book.price}</td>
-                <td>{book.keywords}</td>
+                <td>{book.keywords && book.keywords.join(', ')}</td>
                 <td><a onClick={this.download(book)}>DOWNLOAD</a></td>
               </tr>
             ))

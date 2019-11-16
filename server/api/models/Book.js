@@ -11,7 +11,7 @@ module.exports = {
     name: {type: 'string', required: true},
     author: {type: 'string', required: true},
     price: {type: 'number', required: true},
-    keywords: {type: 'string'},
+    keywords: {type: 'json'},
     binBook: {type: 'ref', columnType: 'binData'},
   },
 

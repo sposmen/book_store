@@ -32,20 +32,34 @@ module.exports = {
         return res.badRequest('Wrong file type. Only txt accepted');
       }
 
-      fs.readFile(uploadedFiles[0].fd, (err, data) => {
+      let streamer = fs.createReadStream(uploadedFiles[0].fd);
+
+      new WordCounter((err, wc) => {
         if (err) {
           return res.serverError(err);
         }
-        book.binBook = new mongodb.Binary(data);
+
+        let sizeKeysValues = [...wc.sizeKeys.keys()];
+
+        let keysIterator = sizeKeysValues.pop();
+        let keywords = [];
+        while (keysIterator && keywords.length < 5) {
+          let words = [...wc.sizeKeys.get(keysIterator).keys()];
+          keywords = _.flatten([keywords, words]);
+          keysIterator = sizeKeysValues.pop();
+        }
+
+        keywords.length = 5;
+        book.keywords = keywords;
+        book.binBook = new mongodb.Binary(wc.data);
 
         Book.create(book).fetch().then((book) => {
-          fs.unlink(uploadedFiles[0].fd, () => {
-          });
+          fs.unlink(uploadedFiles[0].fd, () => 1);
           return res.json(book);
         }).catch((err) => {
           return res.badRequest(err);
         });
-      });
+      }).run(streamer);
     });
   },
 
