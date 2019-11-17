@@ -12,6 +12,10 @@ class HardJwtRequest {
     return HardJwtRequest.request(_.merge({}, opts, {method: 'POST'}), cb);
   }
 
+  static patch(opts, cb) {
+    return HardJwtRequest.request(_.merge({}, opts, {method: 'PATCH'}), cb);
+  }
+
   static download(opts) {
     let filename;
     if(opts.filename){

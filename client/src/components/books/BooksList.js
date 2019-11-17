@@ -5,7 +5,7 @@ import downloadLogo from '../helpers/downloadLogo.svg';
 import NewBook from './NewBook';
 import HardJwtRequest from '../services/HardJwtRequest';
 import {createBrowserHistory} from 'history';
-import signUpLogo from '../auth/signUpLogo.svg';
+import {me} from '../services/AuthService';
 
 class BooksList extends React.Component {
   constructor(props) {
@@ -17,13 +17,17 @@ class BooksList extends React.Component {
       showNew: false,
       page: page,
       pageCount: 1,
-      books: []
+      books: {},
+      userRole: null
     };
-    this.showNew = this.showNew.bind(this);
-    this.hideNew = this.hideNew.bind(this);
   }
 
+  userRole = (me) => {
+    this.setState({'userRole': me.accountType});
+  };
+
   componentDidMount() {
+    me(this.userRole);
     this.toPage(this.state.page);
   }
 
@@ -36,17 +40,22 @@ class BooksList extends React.Component {
     if (this.state.page) {
       let skip = (this.state.page - 1) * this.pageSize;
       let url = `/api/books?skip=${skip}&limit=${this.pageSize}`;
-      JwtRequest.get({url: url}, (books, jwres) => {
-        if (jwres.statusCode === 200 && books) {
+      // Get the Books
+      JwtRequest.get({url: url}, (booksRes, jwres) => {
+        if (jwres.statusCode === 200 && booksRes) {
+          let books = {};
+          booksRes.forEach((book) => books[book.id] = book);
           this.setState({books: books});
         }
       });
+
+      // Get the count
       JwtRequest.get({url: '/api/books/count'}, (booksCount, jwres) => {
         if (jwres.statusCode === 200 && booksCount) {
           let pageCount = Math.ceil(parseInt(booksCount) / this.pageSize);
-          if(this.state.page > pageCount)
+          if (this.state.page > pageCount) {
             this.toPage(pageCount);
-          else{
+          } else {
             this.setState({pageCount: pageCount});
           }
 
@@ -55,14 +64,26 @@ class BooksList extends React.Component {
     }
   }
 
-  showNew() {
-    this.setState({showNew: true});
-  }
+  toggleActive = (book) => {
+    return () => {
+      JwtRequest.patch({url: `/api/books/${book.id}`, data: {active: !book.active}}, (book, jwres) => {
+        if (jwres.statusCode === 200 && book) {
+          // let books = {...this.state.books};
+          this.state.books[book.id] = book;
+          this.setState({books: this.state.books});
+        }
+      });
+    };
+  };
 
-  hideNew() {
+  showNew = () => {
+    this.setState({showNew: true});
+  };
+
+  hideNew = () => {
     this.getBooks();
     this.setState({showNew: false});
-  }
+  };
 
   download(book) {
     return () => {
@@ -72,7 +93,7 @@ class BooksList extends React.Component {
 
   toPage(page) {
     this.setState({page: page});
-    setImmediate(()=>this.getBooks());
+    setImmediate(() => this.getBooks());
     this.history.push({
       pathname: '/books',
       search: '?' + new URLSearchParams({page: page}).toString()
@@ -119,19 +140,26 @@ class BooksList extends React.Component {
           </tr>
           </thead>
           <tbody>
-          {
-            this.state.books.map((book) => (
-              <tr key={book.id}>
+
+          {Object.keys(this.state.books).map((id, i) => {
+            let book = this.state.books[id];
+            return (
+              <tr key={id}>
                 <td>{book.name}</td>
                 <td>{book.author}</td>
                 <td>{book.price}</td>
                 <td>{book.keywords && book.keywords.join(', ')}</td>
-                <td><Button variant="link" onClick={this.download(book)}>
-                  <img src={downloadLogo} style={{width: 20, height: 20}} className="Download-logo" alt="logo"/>
-                </Button></td>
+                <td>
+                  <Button variant="link" onClick={this.download(book)}>
+                    <img src={downloadLogo} style={{width: 20, height: 20}} className="Download-logo" alt="logo"/>
+                  </Button>
+                  <Button variant={book.active ? 'success' : 'secondary'} onClick={this.toggleActive(book)} size="sm">
+                    {book.active ? 'Active' : 'Inactive'}
+                  </Button>
+                </td>
               </tr>
-            ))
-          }
+            );
+          })}
           </tbody>
         </Table>
         <Row><Col>{this.pagination()}</Col></Row>

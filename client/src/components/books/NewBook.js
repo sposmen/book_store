@@ -1,6 +1,7 @@
 import React from 'react';
-import {Button, Form, Modal} from 'react-bootstrap';
+import {Alert, Button, Form, Modal} from 'react-bootstrap';
 import HardJwtRequest from '../services/HardJwtRequest';
+import _ from 'lodash';
 
 class NewBook extends React.Component {
 
@@ -8,10 +9,9 @@ class NewBook extends React.Component {
     super(props);
     this.hideNew = props.hideNew;
     this.state = {
-      newBook: {}
+      newBook: {},
+      error: null
     };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   changeHandler = (event) => {
@@ -20,7 +20,7 @@ class NewBook extends React.Component {
     this.setState({newUser: changed});
   };
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     event.preventDefault();
     event.stopPropagation();
     const data = new FormData();
@@ -36,12 +36,19 @@ class NewBook extends React.Component {
     }).then((response) => {
       console.log(response);
       this.hideNew();
+    }).catch((err, body) => {
+      debugger
+      if (_.isObject(err)) {
+        this.setState({error: err.response.data});
+      }
+      if (_.isString(err)) this.setState({error: err});
     });
   };
 
   newBookForm() {
     return (
       <Modal.Body>
+        {this.state.error ? <Alert variant='danger'>{this.state.error}</Alert> : ''}
         <Form.Group controlId="formBasicName">
           <Form.Label>Book Name</Form.Label>
           <Form.Control

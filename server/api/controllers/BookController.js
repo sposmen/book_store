@@ -64,7 +64,7 @@ module.exports = {
           fs.unlink(uploadedFiles[0].fd, () => 1);
           return res.json(book);
         }).catch((err) => {
-          return res.badRequest(err);
+          return res.badRequest(err.message);
         });
       }).run(streamer);
     });

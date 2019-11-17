@@ -10,29 +10,27 @@ function authResponse(resData, jwres) {
   authHooks.forEach(hook => hook(userData));
 }
 
-export const me = function me(cb = null) {
-  if (userData) {
-    if (authHooks.indexOf(cb) < 0) {
-      authHooks.push(cb);
-    }
-    if(cb){
-      return cb(userData);
-    }
-  }
+let gettingMe = false;
 
-  if (!authHooks.length) {
-    if (!userData && JwtRequest.jwt) {
-      JwtRequest.get({url: '/api/jwt/me'}, (resData, jwres) => {
-        authResponse(resData, jwres);
-      });
-    }
-  }
-  if(cb){
+export const me = function me(cb = null) {
+  // Check if cb is not null and is not already in the hooks
+  if (cb && authHooks.indexOf(cb) < 0) {
     authHooks.push(cb);
   }
-};
+  // If userData is already set, probably just a single call
+  if (userData && cb) {
+    return cb(userData);
+  }
 
-setInterval(me, 10000);
+  // There is no request in course and the user data is not populated but the user is signed in.
+  if (!gettingMe && !userData && JwtRequest.jwt) {
+    gettingMe = true;
+    JwtRequest.get({url: '/api/jwt/me'}, (resData, jwres) => {
+      gettingMe = false;
+      authResponse(resData, jwres);
+    });
+  }
+};
 
 export const logout = function logout(cb) {
   userData = null;

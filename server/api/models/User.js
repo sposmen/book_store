@@ -11,25 +11,10 @@ module.exports = {
   attributes: {
     name: {type: 'string', required: true},
     email: {type: 'string', required: true, unique: true},
-    password: {
-      type: 'string', required: true,
-      minLength: 6
-    },
-
-    accountType: {
-      type: 'string',
-      defaultsTo: 'user'
-    },
-
-    active: {
-      type: 'boolean',
-      defaultsTo: true
-    },
-
-    token: {
-      type: 'string',
-      defaultsTo: 'token'
-    },
+    password: {type: 'string', required: true, minLength: 6},
+    accountType: {type: 'string', defaultsTo: 'user'},
+    active: {type: 'boolean', defaultsTo: true},
+    token: {type: 'string', defaultsTo: 'token'},
   },
 
   // Override toJSON method to remove password from API

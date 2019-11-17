@@ -13,6 +13,7 @@ module.exports = {
     price: {type: 'number', required: true},
     keywords: {type: 'json'},
     binBook: {type: 'ref', columnType: 'binData'},
+    active: {type: 'boolean', defaultsTo: true},
   },
 
   customToJSON: function () {

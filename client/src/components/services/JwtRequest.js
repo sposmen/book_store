@@ -9,6 +9,10 @@ class JwtRequest {
     JwtRequest.request(_.merge({}, opts, {method: 'POST'}), cb);
   }
 
+  static patch(opts, cb) {
+    JwtRequest.request(_.merge({}, opts, {method: 'PATCH'}), cb);
+  }
+
   static request(opts, cb) {
     // eslint-disable-next-line no-undef
     io.socket.request(_.merge({}, opts, {
