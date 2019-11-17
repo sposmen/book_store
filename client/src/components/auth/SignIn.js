@@ -30,7 +30,7 @@ class SignIn extends React.Component {
     event.stopPropagation();
     signIn(this.state.newUser, (resData, jwres) => {
       if (jwres.statusCode === 400) {
-        return this.showError(resData.message);
+        return this.showError(resData);
       }
     });
   };

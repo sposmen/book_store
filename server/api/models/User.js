@@ -15,6 +15,15 @@ module.exports = {
     accountType: {type: 'string', defaultsTo: 'user'},
     active: {type: 'boolean', defaultsTo: true},
     token: {type: 'string', defaultsTo: 'token'},
+
+    orders: {
+      collection: 'order',
+      via: 'owner'
+    },
+    cart: {
+      collection: 'cart',
+      via: 'owner'
+    }
   },
 
   // Override toJSON method to remove password from API

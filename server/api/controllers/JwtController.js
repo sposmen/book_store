@@ -12,23 +12,24 @@ module.exports = {
     }
 
     findCriteria['email'] = req.body.email;
+    findCriteria['active'] = true;
 
     //find email matching user
     User.findOne(findCriteria).then((user) => {
       if (!user) {
-        return res.badRequest('User not found');
+        return res.badRequest('User not found or it is inactive');
       }
 
       //validate password (password, callback)
       User.isPasswordValid(req.body.password, user.password, (err, match) => {
         if (err) {
-          return res.badRequest(err);
+          return res.badRequest(err.message);
         }
         if (match) {//issue a token to the user
           JwtService.issueToken({userId: user.id, userAccountType: user.accountType}, user).then((token) => {
             return res.json({user: user, token: token});
           }).catch((err) => {
-            return res.badRequest(err);
+            return res.badRequest(err.message);
           });
 
         } else {
@@ -36,7 +37,7 @@ module.exports = {
         }
       });
     }).catch((err) => {
-      return res.badRequest(err);
+      return res.badRequest(err.message);
     });
   },
 

@@ -2,6 +2,7 @@ import React from 'react';
 import SignIn from '../auth/SignIn';
 import SignUp from '../auth/SignUp';
 import BooksList from '../books/BooksList';
+import UsersList from '../users/UserList';
 
 const defaultMenu = {
   routes: [
@@ -31,6 +32,7 @@ const menuByUser = {
     ],
     switch: [
       ['/books', <BooksList/>],
+      ['/users', <UsersList/>],
     ]
   }
 };

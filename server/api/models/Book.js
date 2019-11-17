@@ -14,10 +14,14 @@ module.exports = {
     keywords: {type: 'json'},
     binBook: {type: 'ref', columnType: 'binData'},
     active: {type: 'boolean', defaultsTo: true},
+
+    orders:{
+      collection: 'order',
+      via: 'books'
+    }
   },
 
   customToJSON: function () {
     return _.omit(this, ['binBook']);
   },
 };
-

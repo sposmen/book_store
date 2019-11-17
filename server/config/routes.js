@@ -29,6 +29,9 @@ module.exports.routes = {
   'GET /api/books/:id/download': 'BookController.download',
 
 
+  'GET /api/users/count': 'BookController.count',
+
+
   // '/': { view: 'pages/homepage' }
 
 

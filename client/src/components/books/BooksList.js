@@ -23,7 +23,7 @@ class BooksList extends React.Component {
   }
 
   userRole = (me) => {
-    this.setState({'userRole': me.accountType});
+    this.setState({'userRole': me ? me.accountType : null});
   };
 
   componentDidMount() {
@@ -68,9 +68,9 @@ class BooksList extends React.Component {
     return () => {
       JwtRequest.patch({url: `/api/books/${book.id}`, data: {active: !book.active}}, (book, jwres) => {
         if (jwres.statusCode === 200 && book) {
-          // let books = {...this.state.books};
-          this.state.books[book.id] = book;
-          this.setState({books: this.state.books});
+          let books = {...this.state.books};
+          books[book.id] = book;
+          this.setState({books: books});
         }
       });
     };

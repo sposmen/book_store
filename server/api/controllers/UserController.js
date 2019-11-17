@@ -6,4 +6,8 @@
  */
 
 module.exports = {
+
+  count: async function (req, res) {
+    res.send(await User.count());
+  },
 };
