@@ -1,6 +1,6 @@
 import React from 'react';
 import JwtRequest from '../services/JwtRequest';
-import {Button, Col, Row, Table, Pagination} from 'react-bootstrap';
+import {Button, Col, Row, Table, Pagination, ButtonToolbar} from 'react-bootstrap';
 import downloadLogo from '../helpers/downloadLogo.svg';
 import NewBook from './NewBook';
 import HardJwtRequest from '../services/HardJwtRequest';
@@ -36,10 +36,14 @@ class BooksList extends React.Component {
     return param ? params.get(param) : params;
   }
 
+  booksUrl() {
+    let skip = (this.state.page - 1) * this.pageSize;
+    return `/api/books?skip=${skip}&limit=${this.pageSize}`;
+  }
+
   getBooks() {
     if (this.state.page) {
-      let skip = (this.state.page - 1) * this.pageSize;
-      let url = `/api/books?skip=${skip}&limit=${this.pageSize}`;
+      let url = this.booksUrl();
       // Get the Books
       JwtRequest.get({url: url}, (booksRes, jwres) => {
         if (jwres.statusCode === 200 && booksRes) {
@@ -116,6 +120,28 @@ class BooksList extends React.Component {
     );
   }
 
+  actionButtons(book) {
+    return (
+      <ButtonToolbar>
+        <Button variant="link" onClick={this.download(book)}>
+          <img src={downloadLogo} style={{width: 20, height: 20}} className="Download-logo" alt="logo"/>
+        </Button>
+        <Button variant={book.active ? 'success' : 'secondary'} onClick={this.toggleActive(book)}
+                size="sm">
+          {book.active ? 'Active' : 'Inactive'}
+        </Button>
+      </ButtonToolbar>
+    );
+  }
+
+  showNewButton() {
+    return (
+      <Col>
+        <Button variant="primary" onClick={this.showNew}> New </Button>
+      </Col>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -124,9 +150,7 @@ class BooksList extends React.Component {
           <Col md="2">
             <h3>Books</h3>
           </Col>
-          <Col>
-            <Button variant="primary" onClick={this.showNew}> New </Button>
-          </Col>
+          {this.showNewButton()}
         </Row>
 
         <Table striped size="sm">
@@ -149,14 +173,7 @@ class BooksList extends React.Component {
                 <td>{book.author}</td>
                 <td>{book.price}</td>
                 <td>{book.keywords && book.keywords.join(', ')}</td>
-                <td>
-                  <Button variant="link" onClick={this.download(book)}>
-                    <img src={downloadLogo} style={{width: 20, height: 20}} className="Download-logo" alt="logo"/>
-                  </Button>
-                  <Button variant={book.active ? 'success' : 'secondary'} onClick={this.toggleActive(book)} size="sm">
-                    {book.active ? 'Active' : 'Inactive'}
-                  </Button>
-                </td>
+                <td>{this.actionButtons(book)}</td>
               </tr>
             );
           })}
