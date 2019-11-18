@@ -18,7 +18,7 @@ module.exports.routes = {
    * `assets` directory)                                                      *
    *                                                                          *
    ***************************************************************************/
-  '/*': function(req, res, next) {sails.log.info(req.method, req.url); next();},
+  '/*': function(req, res, next) {sails.log.info(req.method, req.url, req.body); next();},
 
   'POST /api/jwt/auth': 'JwtController.auth',
   'POST /api/jwt/signup': 'JwtController.signup',
