@@ -13,12 +13,8 @@ module.exports = {
     price: {type: 'number', required: true},
     keywords: {type: 'json'},
     binBook: {type: 'ref', columnType: 'binData'},
-    active: {type: 'boolean', defaultsTo: true},
+    active: {type: 'boolean', defaultsTo: true}
 
-    orders:{
-      collection: 'order',
-      via: 'books'
-    }
   },
 
   customToJSON: function () {

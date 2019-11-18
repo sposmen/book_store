@@ -71,7 +71,12 @@ module.exports = {
   },
 
   count: async function (req, res) {
-    res.send(await Book.count());
+    let onlyActive = req.param('active');
+    res.send(await Book.count(
+      onlyActive ?
+        {active: true}:
+        undefined
+    ));
   },
 
   download: function (req, res) {

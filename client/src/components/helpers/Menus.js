@@ -4,6 +4,9 @@ import SignUp from '../auth/SignUp';
 import BooksList from '../books/BooksList';
 import UsersList from '../users/UserList';
 import MyBooksList from '../books/MyBooksList';
+import OrdersList from '../orders/OrdersList';
+import MyOrdersList from '../orders/MyOrdersList';
+import Cart from '../cart/Cart';
 
 const defaultMenu = {
   routes: [
@@ -25,6 +28,8 @@ const menuByUser = {
     ],
     switch: [
       ['/books', <MyBooksList/>],
+      ['/orders', <MyOrdersList/>],
+      ['/cart', <Cart/>],
     ]
   },
   admin: {
@@ -36,6 +41,7 @@ const menuByUser = {
     switch: [
       ['/books', <BooksList/>],
       ['/users', <UsersList/>],
+      ['/orders', <OrdersList/>],
     ]
   }
 };

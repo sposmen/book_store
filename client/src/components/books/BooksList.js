@@ -6,6 +6,7 @@ import NewBook from './NewBook';
 import HardJwtRequest from '../services/HardJwtRequest';
 import {createBrowserHistory} from 'history';
 import {me} from '../services/AuthService';
+import {Redirect} from 'react-router-dom';
 
 class BooksList extends React.Component {
   constructor(props) {
@@ -18,7 +19,8 @@ class BooksList extends React.Component {
       page: page,
       pageCount: 1,
       books: {},
-      userRole: null
+      userRole: null,
+      redirectTo: null
     };
   }
 
@@ -41,11 +43,14 @@ class BooksList extends React.Component {
     return `/api/books?skip=${skip}&limit=${this.pageSize}`;
   }
 
+  booksCountUrl() {
+    return '/api/books/count';
+  }
+
   getBooks() {
     if (this.state.page) {
-      let url = this.booksUrl();
       // Get the Books
-      JwtRequest.get({url: url}, (booksRes, jwres) => {
+      JwtRequest.get({url: this.booksUrl()}, (booksRes, jwres) => {
         if (jwres.statusCode === 200 && booksRes) {
           let books = {};
           booksRes.forEach((book) => books[book.id] = book);
@@ -54,7 +59,7 @@ class BooksList extends React.Component {
       });
 
       // Get the count
-      JwtRequest.get({url: '/api/books/count'}, (booksCount, jwres) => {
+      JwtRequest.get({url: this.booksCountUrl()}, (booksCount, jwres) => {
         if (jwres.statusCode === 200 && booksCount) {
           let pageCount = Math.ceil(parseInt(booksCount) / this.pageSize);
           if (this.state.page > pageCount) {
@@ -143,6 +148,9 @@ class BooksList extends React.Component {
   }
 
   render() {
+    if(this.state.redirectTo){
+      return <Redirect to={this.state.redirectTo} />
+    }
     return (
       <div>
         <NewBook showNew={this.state.showNew} hideNew={this.hideNew}/>

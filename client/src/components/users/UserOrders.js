@@ -15,7 +15,7 @@ class UserOrders extends React.Component {
   }
 
   componentDidMount() {
-    let url = `/api/users/${this.props.showOrders.id}/orders?sort=createdAt%20DESC`;
+    let url = `/api/orders/?where={"owner":"${this.props.showOrders.id}"}&sort=createdAt%20DESC&populate=books,owner`;
     // Get the Users
     JwtRequest.get({url: url}, (ordersRes, jwres) => {
       if (jwres.statusCode === 200 && ordersRes) {
@@ -29,7 +29,7 @@ class UserOrders extends React.Component {
   ordersTable() {
     return (
       <Modal.Body>
-        <OrdersTable orders={this.props.orders}/>
+        <OrdersTable orders={this.state.orders}/>
       </Modal.Body>
     );
   }

@@ -24,12 +24,12 @@ module.exports.routes = {
   'POST /api/jwt/signup': 'JwtController.signup',
   'GET /api/jwt/me': 'JwtController.me',
 
-
   'GET /api/books/count': 'BookController.count',
   'GET /api/books/:id/download': 'BookController.download',
 
+  'GET /api/users/count': 'UserController.count',
 
-  'GET /api/users/count': 'BookController.count',
+  'GET /api/orders/count': 'OrderController.count',
 
 
   // '/': { view: 'pages/homepage' }

@@ -21,9 +21,13 @@ function OrdersTable(props) {
         return (
           <tr key={id}>
             <td>{id}</td>
-            <td>{order.name}</td>
-            <td>{order.email}</td>
-            <td>{order.books}</td>
+            <td>{(new Date(order.createdAt)).toLocaleDateString()}</td>
+            <td>{order.owner.email}</td>
+            <td>{
+              order.books.map(book=>
+                <div key={book.id}>- {book.name}</div>
+              )
+            }</td>
           </tr>
         );
       })}

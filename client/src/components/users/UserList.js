@@ -113,7 +113,11 @@ class UsersList extends React.Component {
   render() {
     return (
       <div>
-        <UserOrders showOrders={this.state.showOrders} hideOrders={this.hideOrders}/>
+        {
+          !!this.state.showOrders ?
+            <UserOrders showOrders={this.state.showOrders} hideOrders={this.hideOrders}/> :
+            ''
+        }
         <Row>
           <Col md="2">
             <h3>Users</h3>

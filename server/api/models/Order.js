@@ -8,10 +8,8 @@
 module.exports = {
 
   attributes: {
-    books: {
-      collection: 'book',
-      via: 'orders'
-    },
+    books: {type: 'json'},
+    total: {type: 'number'},
     owner:{
       model:'user'
     }
