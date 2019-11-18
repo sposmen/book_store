@@ -32,6 +32,11 @@ export const me = function me(cb = null) {
   }
 };
 
+// This method is to clean unmounted components
+export const unMe = function unMe(cb) {
+  authHooks.splice(authHooks.indexOf(cb), 1);
+};
+
 export const logout = function logout(cb) {
   userData = null;
   JwtRequest.flush();

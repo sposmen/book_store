@@ -5,7 +5,6 @@ import downloadLogo from '../helpers/downloadLogo.svg';
 import NewBook from './NewBook';
 import HardJwtRequest from '../services/HardJwtRequest';
 import {createBrowserHistory} from 'history';
-import {me} from '../services/AuthService';
 import {Redirect} from 'react-router-dom';
 
 class BooksList extends React.Component {
@@ -24,12 +23,7 @@ class BooksList extends React.Component {
     };
   }
 
-  userRole = (me) => {
-    this.setState({'userRole': me ? me.accountType : null});
-  };
-
   componentDidMount() {
-    me(this.userRole);
     this.toPage(this.state.page);
   }
 

@@ -2,7 +2,6 @@ import React from 'react';
 import JwtRequest from '../services/JwtRequest';
 import {Col, Row, Pagination} from 'react-bootstrap';
 import {createBrowserHistory} from 'history';
-import {me} from '../services/AuthService';
 import OrdersTable from './OrdersTable';
 
 class OrdersList extends React.Component {
@@ -15,16 +14,10 @@ class OrdersList extends React.Component {
       page: page,
       pageCount: 1,
       orders: {},
-      userRole: null
     };
   }
 
-  userRole = (me) => {
-    this.setState({'userRole': me ? me.accountType : null});
-  };
-
   componentDidMount() {
-    me(this.userRole);
     this.toPage(this.state.page);
   }
 
