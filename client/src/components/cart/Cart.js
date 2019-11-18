@@ -1,12 +1,14 @@
 import React from 'react';
 import JwtRequest from '../services/JwtRequest';
-import {Col, Row, Table} from 'react-bootstrap';
+import {Button, Col, Row, Table} from 'react-bootstrap';
+import {Redirect} from 'react-router-dom';
 
 
 class Cart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirectTo: null,
       books: [],
       total: 0
     };
@@ -31,7 +33,18 @@ class Cart extends React.Component {
     });
   }
 
+  placeOrder = ()=> {
+    JwtRequest.post({url: '/api/carts/placeOrder'}, (books, jwres) => {
+      if (jwres.statusCode === 200 && books) {
+        this.setState({redirectTo:'/orders'});
+      }
+    });
+  };
+
   render() {
+    if(this.state.redirectTo){
+      return <Redirect to={this.state.redirectTo} />
+    }
     return (
       <div>
         <Row>
@@ -62,6 +75,8 @@ class Cart extends React.Component {
           </tr>
           </thead>
         </Table>
+
+        <Button onClick={this.placeOrder} variant="primary" disabled={!this.state.books.length}>Place Order</Button>
       </div>
     );
   }

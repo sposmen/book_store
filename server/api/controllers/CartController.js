@@ -4,7 +4,7 @@ module.exports = {
       {owner: req.user.id},
       {owner: req.user.id, books: []}
     );
-    return res.json(await Book.find({id: cart.books}));
+    return res.json(await Book.find({id: cart.books, active: true}));
   },
 
   create: async function (req, res) {
@@ -25,5 +25,45 @@ module.exports = {
       return res.json(books);
     })
     .catch(err => res.badRequest(err.message));
+  },
+
+  placeOrder: async function (req, res) {
+    let cart = await Cart.findOne({owner: req.user.id});
+    if (!cart) {
+      return res.badRequest('No books in cart');
+    }
+
+    let books = await Book.find({id: cart.books, active: true});
+    if (!books) {
+      return res.badRequest('No books in cart');
+    };
+
+    books = books.map(book => {
+      return {
+        id: book.id,
+        name: book.name,
+        price: book.price
+      };
+    });
+
+    let total = books.reduce((acc, book) => {
+      return acc + book.price;
+    }, 0);
+
+    let newOrder = {
+      owner: req.user.id,
+      books: books,
+      total: total
+    };
+
+    let placedOrder = await Order.create(newOrder).fetch();
+
+    if (placedOrder) {
+      await Cart.updateOne({id: cart.id}).set({
+        books: []
+      });
+    }
+
+    return res.json(placedOrder);
   }
 };

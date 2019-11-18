@@ -31,6 +31,8 @@ module.exports.routes = {
 
   'GET /api/orders/count': 'OrderController.count',
 
+  'POST /api/carts/placeOrder': 'CartController.placeOrder',
+
 
   // '/': { view: 'pages/homepage' }
 

@@ -17,18 +17,13 @@ class NewBook extends React.Component {
   changeHandler = (event) => {
     let changed = this.state.newBook;
     changed[event.target.name] = event.target.value;
-    this.setState({newUser: changed});
+    this.setState({newBook: changed});
   };
 
   handleSubmit = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    const data = new FormData();
-    let file = document.getElementById('formBasicFile');
-    data.append('bookFile', file.files[0]);
-    Object.keys(this.state.newBook).forEach((key) => {
-      data.append(key, this.state.newBook[key]);
-    });
+    const data = new FormData(event.currentTarget);
     HardJwtRequest.post({
       url: '/api/books',
       data: data,
@@ -37,7 +32,6 @@ class NewBook extends React.Component {
       console.log(response);
       this.hideNew();
     }).catch((err, body) => {
-      debugger
       if (_.isObject(err)) {
         this.setState({error: err.response.data});
       }
@@ -102,7 +96,7 @@ class NewBook extends React.Component {
             <Button variant="secondary" onClick={this.hideNew}>
               Close
             </Button>
-            <Button type="submit" variant="primary" onClick={this.handleSubmit}>
+            <Button type="submit" variant="primary">
               Save Book
             </Button>
           </Modal.Footer>
