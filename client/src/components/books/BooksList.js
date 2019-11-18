@@ -1,6 +1,6 @@
 import React from 'react';
 import JwtRequest from '../services/JwtRequest';
-import {Button, Col, Row, Table, Pagination, ButtonToolbar} from 'react-bootstrap';
+import {Button, Col, Row, Table, Pagination, ButtonToolbar, Form, FormControl} from 'react-bootstrap';
 import downloadLogo from '../helpers/downloadLogo.svg';
 import NewBook from './NewBook';
 import HardJwtRequest from '../services/HardJwtRequest';
@@ -119,6 +119,11 @@ class BooksList extends React.Component {
     );
   }
 
+  search = (event)=>{
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   actionButtons(book) {
     return (
       <ButtonToolbar>
@@ -142,8 +147,8 @@ class BooksList extends React.Component {
   }
 
   render() {
-    if(this.state.redirectTo){
-      return <Redirect to={this.state.redirectTo} />
+    if (this.state.redirectTo) {
+      return <Redirect to={this.state.redirectTo}/>;
     }
     return (
       <div>
@@ -155,32 +160,45 @@ class BooksList extends React.Component {
           {this.showNewButton()}
         </Row>
 
-        <Table striped size="sm">
-          <thead>
-          <tr>
-            <th>Name</th>
-            <th>Author</th>
-            <th>Price</th>
-            <th>Keywords</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
+        <Row>
+          <Col>
+            <Form inline onSubmit={this.search}>
+              <FormControl type="text" placeholder="Search" className="mr-sm-2"/>
+              <Button type="submit" variant="outline-primary">Search</Button>
+            </Form>
+          </Col>
+        </Row>
 
-          {Object.keys(this.state.books).map((id, i) => {
-            let book = this.state.books[id];
-            return (
-              <tr key={id}>
-                <td>{book.name}</td>
-                <td>{book.author}</td>
-                <td>{book.price}</td>
-                <td>{book.keywords && book.keywords.join(', ')}</td>
-                <td>{this.actionButtons(book)}</td>
+        <Row>
+          <Col>
+            <Table striped size="sm">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Author</th>
+                <th>Price</th>
+                <th>Keywords</th>
+                <th>Actions</th>
               </tr>
-            );
-          })}
-          </tbody>
-        </Table>
+              </thead>
+              <tbody>
+              {Object.keys(this.state.books).map((id, i) => {
+                let book = this.state.books[id];
+                return (
+                  <tr key={id}>
+                    <td>{book.name}</td>
+                    <td>{book.author}</td>
+                    <td>{book.price}</td>
+                    <td>{book.keywords && book.keywords.join(', ')}</td>
+                    <td>{this.actionButtons(book)}</td>
+                  </tr>
+                );
+              })}
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
+
         <Row><Col>{this.pagination()}</Col></Row>
       </div>
     );

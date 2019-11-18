@@ -29,7 +29,6 @@ class NewBook extends React.Component {
       data: data,
       headers: {'content-type': 'multipart/form-data'}
     }).then((response) => {
-      console.log(response);
       this.hideNew();
     }).catch((err, body) => {
       if (_.isObject(err)) {
